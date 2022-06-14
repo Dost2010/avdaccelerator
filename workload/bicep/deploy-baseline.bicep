@@ -255,6 +255,26 @@ var resourceGroups = [
     */
 ]
 // =========== //
+// Pre-deployments //
+// =========== //
+
+//
+resource scriptInTemplate1 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+    //scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+    scope: avdServiceObjectsRgName
+    name: 'Pre-Deploy-Script-${deploymentPrefixLowercase}-${time}'
+    location: avdManagementPlaneLocation
+    kind: 'AzurePowerShell'
+    properties: {
+        azPowerShellVersion: '7.1'
+        scriptContent: loadTextContent('../scripts/pre-deployment.ps1')
+        retentionInterval: 'P1D'
+    }
+}
+
+/*
+
+// =========== //
 // Deployments //
 // =========== //
 
@@ -520,3 +540,4 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
     ]
 }
  
+*/
