@@ -171,24 +171,159 @@ param enableTelemetry bool = true
 // =========== //
 // Variable declaration //
 // =========== //
-var deploymentPrefixLowercase = toLower(deploymentPrefix)
-var avdSessionHostLocationLowercase = toLower(avdSessionHostLocation)
+var regions_abbrev  =[
+  'eastasia'
+  'eas'
+   
+  'southeastasia'
+  'seas'
+ 
+  'centralus'
+  'cus'
+     
+  'eastus'
+  'eus'
+ 
+  'eastus2'
+  'eus2'
+
+  'westus2'
+  'wus'
+
+  'northcentralus'
+  'ncus'
+  
+  'southcentral'
+  'scus'
+  
+  'northeurope'
+  'neu'
+
+  'westeurope'
+  'weu'
+ 
+  'japanwest'
+  'jpw'
+
+  'japaneast'
+  'jpe'
+
+  'brazilsouth' 
+  'drs'
+ 
+  'australiaeast'
+  'aue'
+ 
+  'australiasoutheast'
+  'ause'
+
+  'southindia'
+  'sin'
+
+  'centralindia'
+  'cin'
+  
+  'westindia'
+  'win'
+
+  'canadacentral'
+  'cac'
+
+  'canadaeast'
+  'cae'
+
+  'uksouth'
+  'uks'
+  
+  'ukwest'
+  'ukw'
+ 
+  'westcentralus'
+  'wcus'
+  
+  'westu2'
+  'wus2'
+
+  'koreancentral'
+  'krc'
+ 
+  'koreansouth'
+  'krs'
+
+  'francecentral' 
+  'frc'
+  
+  'francesouth'
+  'frs'
+    
+  'australiacentral'
+  'auc'
+  
+  'australiacentral2'
+  'auc2'
+
+  'uaecentral'
+  'aec'
+
+  'uaenorth'
+  'aen'
+
+  'southafricanorth'
+  'zan'
+    
+  'southafricawest'
+  'ZAW'
+  
+  'switzherlandnorth'
+  'chn'
+
+  'swithzerlandwest'
+  'chw'
+
+  'germanynorth'
+  'den'
+
+  'germanywestcentral'
+  'dewc'
+
+  'norwaywest'
+  'now'
+
+  'norwayeast'
+  'noe'
+
+  'brazilsoutheast'
+  'brse'
+
+  'westus3'
+  'wus3'
+
+  'swedencentral'
+  'sec'
+ ]
+
+
+var deploymentPrefixLowercase=toLower(deploymentPrefix)
+var avdSessionHostLocationLowercase=toLower(avdSessionHostLocation)
+var regionIndex=lastIndexOf(regions_abbrev, avdSessionHostLocationLowercase)
+var regionAbbreviation =regions_abbrev[regionIndex+1]
+
 var avdManagementPlaneLocationLowercase = toLower(avdManagementPlaneLocation)
-var avdServiceObjectsRgName = 'rg-${avdManagementPlaneLocationLowercase}-avd-${deploymentPrefixLowercase}-service-objects' // max length limit 90 characters
-var avdNetworkObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-network' // max length limit 90 characters
-var avdComputeObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-pool-compute' // max length limit 90 characters
-var avdStorageObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-storage' // max length limit 90 characters
-var avdSharedResourcesRgName = 'rg-${avdSessionHostLocationLowercase}-avd-shared-resources'
-var avdVnetworkName = 'avdvnet-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
-var avdVnetworkSubnetName = 'avd-${deploymentPrefixLowercase}'
-var avdNetworksecurityGroupName = 'avdnsg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
-var avdRouteTableName = 'avdudr-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
-var avdApplicationsecurityGroupName = 'avdasg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
+var avdServiceObjectsRgName = 'rg-${avdManagementPlaneLocationLowercase}-${regionAbbreviation}-avd-${deploymentPrefixLowercase}-service-objects' // max length limit 90 characters
+var avdNetworkObjectsRgName = 'rg-${regionAbbreviation}-avd-${deploymentPrefixLowercase}-network' // max length limit 90 characters
+var avdComputeObjectsRgName = 'rg-${regionAbbreviation}-avd-${deploymentPrefixLowercase}-pool-compute' // max length limit 90 characters
+var avdStorageObjectsRgName = 'rg-${regionAbbreviation}-avd-${deploymentPrefixLowercase}-storage' // max length limit 90 characters
+var avdSharedResourcesRgName = 'rg-${regionAbbreviation}-avd-shared-resources' //Not used, should delete
+var avdVnetworkName = 'vnet-avd-${regionAbbreviation}-${deploymentPrefixLowercase}'
+var avdVnetworkSubnetName = 'snet-avd-${regionAbbreviation}-${deploymentPrefixLowercase}'
+var avdNetworksecurityGroupName = 'nsg-avd-${regionAbbreviation}-${deploymentPrefixLowercase}'
+var avdRouteTableName = 'route-avd-${regionAbbreviation}-${deploymentPrefixLowercase}'
+var avdApplicationsecurityGroupName = 'asg-avd-${regionAbbreviation}-${deploymentPrefixLowercase}'
 var avdVnetworkPeeringName = '${uniqueString(deploymentPrefixLowercase, avdSessionHostLocation)}-peering-avd-${deploymentPrefixLowercase}'
-var avdWorkSpaceName = 'avdws-${deploymentPrefixLowercase}'
-var avdHostPoolName = 'avdhp-${deploymentPrefixLowercase}'
-var avdApplicationGroupNameDesktop = 'avddag-${deploymentPrefixLowercase}'
-var avdApplicationGroupNameRapp = 'avdraag-${deploymentPrefixLowercase}'
+var avdWorkSpaceName = 'avdws-${regionAbbreviation}-${deploymentPrefixLowercase}'
+var avdHostPoolName = 'avdhp-${regionAbbreviation}-${deploymentPrefixLowercase}'
+var avdApplicationGroupNameDesktop = 'avdag-desktop-${regionAbbreviation}-${deploymentPrefixLowercase}'
+var avdApplicationGroupNameRapp = 'avdag-app-${regionAbbreviation}-${deploymentPrefixLowercase}'
 var marketPlaceGalleryWindows = {
     'win10_21h2_office': {
         publisher: 'MicrosoftWindowsDesktop'
@@ -235,9 +370,9 @@ var addStorageToDomainScriptUri='${baseScriptUri}scripts/Manual-DSC-JoinStorage-
 var addStorageToDomainScript='./Manual-DSC-JoinStorage-to-ADDS.ps1'
 var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixFileShareName} -Verbose'
 var OuStgName = !empty(storageOuName)? storageOuName : 'Computers'
-var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
-var avdSessionHostNamePrefix = 'avdsh-${deploymentPrefix}'
-var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
+var avdWrklKvName = 'avd-${regionAbbreviation}-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
+var avdSessionHostNamePrefix = 'avdsh--${regionAbbreviation}-${deploymentPrefix}'
+var avdAvailabilitySetName = 'avdas-${regionAbbreviation}-${deploymentPrefix}'
 var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
 
